@@ -1,0 +1,13 @@
+No questions, only schedules
+
+Main Screen:
+Subject buttons -> Respctive Window
+
+Subject Window:
+Table (displaying the current [Chapter Name, Target Questions, Questions Solved, Deadline]) to the left
+Schedule button -> Schedule Window to the right
+
+Schedule Window:
+Dropdown box for Chapter Names
+Input for Target Questions
+Deadline (Probably Date Selector)
