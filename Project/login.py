@@ -1,14 +1,8 @@
 import customtkinter as ctk
 import mysql.connector
 import re
+from interface import create_main_screen
 from tkinter import messagebox
-import os
-
-USER_FILE_PATH = 'users.txt'
-
-if not os.path.exists(USER_FILE_PATH):
-    with open(USER_FILE_PATH, 'w') as file:
-        pass
 
 try:
     mydb = mysql.connector.connect(
@@ -39,7 +33,7 @@ def validate_password(password):
         return False
     if not re.search("[0-9]", password):
         return False
-    if not re.search("[@_#$%^&+=]", password):
+    if not re.search("[!@_#$%^&+*=]", password):
         return False
     return True
 
@@ -54,6 +48,9 @@ def generate_unique_user_id():
             return user_id
         i += 1
 
+def block_paste(event):
+    return "break"
+
 def login_user():
     username = entry_username.get()
     password = entry_password.get()
@@ -62,42 +59,27 @@ def login_user():
         messagebox.showerror("Error", "All fields are required!")
         return
 
-    query = "SELECT Password FROM details WHERE Username=%s"
-    mycursor.execute(query, (username,))
-    result = mycursor.fetchone()
+    try:
+        mycursor.execute("USE user")
 
-    if result and result[0] == password:
-        login_win.destroy()
-        
-        create_resizable_window(username)
-    else:
-        messagebox.showerror("Error", "Invalid Username or Password")
+        query = "SELECT UserID, Password FROM details WHERE Username=%s"
+        mycursor.execute(query, (username,))
+        result = mycursor.fetchone()
 
-def create_resizable_window(username):
-    resizable_win = ctk.CTk()
-    resizable_win.geometry("1280x720") 
-    resizable_win.title("Excalibur")
-    resizable_win.configure(bg="#1f1f1f")
-    resizable_win.resizable(True, True) 
+        if result:
+            user_id, stored_password = result
+            if stored_password == password:
+                login_win.destroy()
 
-    resizable_win.columnconfigure(0, weight=1)
-    resizable_win.rowconfigure(0, weight=1)
-    
-    main_frame = ctk.CTkFrame(resizable_win)
-    main_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
-    main_frame.columnconfigure(0, weight=1)
-    main_frame.rowconfigure(0, weight=1)
-    
-    welcome_label = ctk.CTkLabel(main_frame, text=f"Welcome, {username}", font=("Arial", 36), text_color="white")
-    welcome_label.grid(row=0, column=0, pady=(40, 20), sticky="n")
+                mycursor.execute(f"USE `{user_id}`")
+                create_main_screen(username, user_id)
+            else:
+                messagebox.showerror("Error", "Invalid Username or Password")
+        else:
+            messagebox.showerror("Error", "Username not found")
 
-    content_label = ctk.CTkLabel(main_frame, text="This area is for future content.", font=("Arial", 24), text_color="white")
-    content_label.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
-
-    btn_logout = ctk.CTkButton(main_frame, text="Logout", command=resizable_win.destroy, width=120, fg_color="#f44336", hover_color="#e53935")
-    btn_logout.grid(row=2, column=0, pady=(20, 40), sticky="s")
-
-    resizable_win.mainloop()
+    except mysql.connector.Error as err:
+        messagebox.showerror("Database Error", f"Error: {err}")
 
 def create_user_database_and_tables(user_id):
     try:
@@ -141,9 +123,6 @@ def register_user():
 
         create_user_database_and_tables(unique_user_id)
 
-        with open(USER_FILE_PATH, 'a') as file:
-            file.write(f"{unique_user_id}\n")
-
         messagebox.showinfo("Success", f"Registration Successful! Your User ID is {unique_user_id}")
         signup_win.destroy()
         create_login_window()
@@ -175,6 +154,8 @@ def sign_up_window():
 
     btn_register = ctk.CTkButton(signup_win, text="Register", command=register_user, width=160, fg_color="#4CAF50", hover_color="#66bb6a")
     btn_register.pack(pady=20)
+    
+    signup_win.bind("<Return>", lambda event: register_user())
 
     signup_win.mainloop()
 
@@ -186,7 +167,7 @@ def create_login_window():
     login_win.title("Login")
     login_win.configure(bg="#1f1f1f")
 
-    ctk.CTkLabel(login_win, text="Excalibur", font=("Arial", 28), text_color="white").pack(pady=20)
+    ctk.CTkLabel(login_win, text="Knights of the Round Table", font=("Arial", 28), text_color="white").pack(pady=20)
 
     frame = ctk.CTkFrame(login_win, width=320, height=280, corner_radius=15, bg_color="#2f2f2f")
     frame.pack(pady=30)
@@ -203,16 +184,21 @@ def create_login_window():
     entry_password = ctk.CTkEntry(frame, width=200, show="*", corner_radius=10)
     entry_password.pack(pady=5)
 
+    entry_password.bind("<Control-v>", block_paste)
+    entry_password.bind("<Button-3>", block_paste) 
+
     btn_login = ctk.CTkButton(frame, text="Login", command=login_user, width=120, fg_color="#4CAF50", hover_color="#66bb6a")
     btn_login.pack(pady=20)
 
     lbl_sign_up = ctk.CTkLabel(frame, text="Don't have an account? Sign Up", fg_color=None, text_color="#ADD8E6", cursor="hand2")
     lbl_sign_up.pack(pady=10)
     lbl_sign_up.bind("<Button-1>", lambda e: sign_up_window())
+    
+    login_win.bind("<Return>", lambda event: login_user())
 
     login_win.mainloop()
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
-
+        
 create_login_window()
