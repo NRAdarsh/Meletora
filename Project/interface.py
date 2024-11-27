@@ -323,7 +323,7 @@ def close_subject_window(subject_window, main_screen):
 def create_main_screen(username, user_id):
     main_screen = ctk.CTk()
     main_screen.geometry("1280x720") 
-    main_screen.title("Knights of the Round Table")
+    main_screen.title("Meletora")
     main_screen.configure(bg="#1f1f1f")
     main_screen.resizable(False, False)
 
