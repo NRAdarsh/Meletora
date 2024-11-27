@@ -167,7 +167,7 @@ def create_login_window():
     login_win.title("Login")
     login_win.configure(bg="#1f1f1f")
 
-    ctk.CTkLabel(login_win, text="Knights of the Round Table", font=("Arial", 28), text_color="white").pack(pady=20)
+    ctk.CTkLabel(login_win, text="Meletora", font=("Arial", 28), text_color="white").pack(pady=20)
 
     frame = ctk.CTkFrame(login_win, width=320, height=280, corner_radius=15, bg_color="#2f2f2f")
     frame.pack(pady=30)
