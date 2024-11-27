@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import mysql.connector
+import subprocess
 import re
 from interface import create_main_screen
 from tkinter import messagebox
@@ -124,6 +125,10 @@ def register_user():
         create_user_database_and_tables(unique_user_id)
 
         messagebox.showinfo("Success", f"Registration Successful! Your User ID is {unique_user_id}")
+        try:
+            subprocess.Popen(["python", "reminder.py"])
+        except Exception as e:
+            print(f"Failed to run reminder script: {e}")
         signup_win.destroy()
         create_login_window()
     except mysql.connector.Error as err:
