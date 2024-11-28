@@ -24,7 +24,7 @@ def send_notification():
     notification.notify(
         title='Hey there, star pupil!',
         message='Deadline\'s closing in, don\'t forget to brush up those questions!',
-        timeout=20,
+        timeout=30,
         app_name = 'Meletora'
     )
 
