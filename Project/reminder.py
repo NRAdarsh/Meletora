@@ -16,7 +16,6 @@ def add_to_registry():
         reg_key = reg.OpenKey(key, key_path, 0, reg.KEY_WRITE)
         reg.SetValueEx(reg_key, value_name, 0, reg.REG_SZ, command)
         reg.CloseKey(reg_key)
-        print("Added to startup successfully!")
     except Exception as e:
         print(f"Failed to add to startup: {e}")
 
