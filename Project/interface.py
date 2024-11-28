@@ -342,17 +342,17 @@ def create_main_screen(username, user_id):
     date_label = ctk.CTkLabel(top_frame, text=f"Today is {current_date}", font=("Arial", 24), text_color="white")
     date_label.grid(row=1, column=0, pady=(0, 20), sticky="n")
 
-    clock_canvas = ctk.CTkCanvas(main_screen, width=300, height=300, background="#2b2b2b", highlightthickness=0)
+    clock_canvas = ctk.CTkCanvas(main_screen, width=400, height=400, background="#2b2b2b", highlightthickness=0)
     clock_canvas.place(relx=0.0, rely=0.5, anchor="w", x=20)
 
-    clock_canvas.create_oval(50, 50, 250, 250, outline="white", width=3)
+    clock_canvas.create_oval(50, 50, 350, 350, outline="white", width=3)
 
     hour_hand = clock_canvas.create_line(150, 150, 150, 100, width=8, fill="white", capstyle="round", smooth=True)
     minute_hand = clock_canvas.create_line(150, 150, 150, 70, width=6, fill="white", capstyle="round", smooth=True)
     second_hand = clock_canvas.create_line(150, 150, 150, 50, width=2, fill="red", capstyle="round", smooth=True)
 
-    center_x, center_y = 150, 150
-    radius = 90
+    center_x, center_y = 200, 200
+    radius = 150
 
     update_analog_clock(clock_canvas, hour_hand, minute_hand, second_hand, center_x, center_y, radius)
 
