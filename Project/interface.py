@@ -354,6 +354,22 @@ def create_main_screen(username, user_id):
     center_x, center_y = 200, 200
     radius = 150
 
+    for i in range(12):
+        angle = math.radians(i * 30)
+        x = center_x + radius * 0.85 * math.sin(angle)
+        y = center_y - radius * 0.85 * math.cos(angle)
+        
+        if i == 0:
+            clock_canvas.create_text(x, y, text="12", fill="white", font=("Arial", 16))
+        elif i == 3:
+            clock_canvas.create_text(x, y, text="3", fill="white", font=("Arial", 16))
+        elif i == 6:
+            clock_canvas.create_text(x, y, text="6", fill="white", font=("Arial", 16))
+        elif i == 9:
+            clock_canvas.create_text(x, y, text="9", fill="white", font=("Arial", 16))
+        else:
+            clock_canvas.create_text(x, y, text=str(i % 12 or 12), fill="white", font=("Arial", 14))
+
     update_analog_clock(clock_canvas, hour_hand, minute_hand, second_hand, center_x, center_y, radius)
 
     btn_physics = ctk.CTkButton(main_screen, text="Physics", command=lambda: create_subject_window("Physics", user_id, main_screen), 
